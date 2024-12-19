@@ -1,13 +1,8 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: nextcloud
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nextcloud
-  namespace: nextcloud # Namespace hinzufügen
+  namespace: nextcloud # Namespace anpassen
 spec:
   replicas: 1
   selector:
@@ -23,9 +18,21 @@ spec:
           image: nextcloud:latest
           ports:
             - containerPort: 80
+          env:
+            - name: POSTGRES_HOST
+              value: nextcloud-postgresql # Der Name des PostgreSQL-Service
+            - name: POSTGRES_DB
+              value: nextcloud # Der Datenbankname
+            - name: POSTGRES_USER
+              value: nextclouduser # Der PostgreSQL-Benutzer
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-postgresql-secret
+                  key: password # Holen des Passworts aus dem Secret
           volumeMounts:
             - name: nextcloud-storage
-              mountPath: /var/www/html # Standard-Nextcloud-Verzeichnis für Daten
+              mountPath: /var/www/html
       volumes:
         - name: nextcloud-storage
           persistentVolumeClaim:
@@ -35,7 +42,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: nextcloud-service
-  namespace: nextcloud # Namespace hinzufügen
+  namespace: nextcloud
 spec:
   selector:
     app: nextcloud
@@ -43,4 +50,4 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
-  type: NodePort # Falls du externen Zugriff möchtest, ansonsten kannst du NodePort oder ClusterIP verwenden
+  type: NodePort

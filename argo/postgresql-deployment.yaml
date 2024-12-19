@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud-postgresql
+  namespace: nextcloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud-postgresql
+  template:
+    metadata:
+      labels:
+        app: nextcloud-postgresql
+    spec:
+      containers:
+        - name: postgresql
+          image: postgres:13 # Wähle eine stabile PostgreSQL-Version
+          env:
+            - name: POSTGRES_DB
+              value: nextcloud
+            - name: POSTGRES_USER
+              value: nextclouduser
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-postgresql-secret
+                  key: password # Wir holen das Passwort aus einem Secret
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgresql-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgresql-data
+          persistentVolumeClaim:
+            claimName: nextcloud-postgresql-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextcloud-postgresql
+  namespace: nextcloud
+spec:
+  selector:
+    app: nextcloud-postgresql
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
