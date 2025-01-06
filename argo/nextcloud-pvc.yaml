@@ -8,4 +8,4 @@ spec:
   resources:
     requests:
       storage: 465Gi # Anpassen an die Größe der SSD
-  storageClassName: standard
+  storageClassName: local-path-ssd
