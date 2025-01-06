@@ -9,7 +9,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: standard
+  storageClassName: local-path-ssd
   local:
     path: /mnt/myssd # Der Mount-Punkt der SSD auf deinem Raspberry Pi
   nodeAffinity:
@@ -19,4 +19,4 @@ spec:
             - key: kubernetes.io/hostname
               operator: In
               values:
-                - rsp1schelto
+                - rsp1
