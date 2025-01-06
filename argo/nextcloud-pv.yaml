@@ -9,7 +9,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: local-path-ssd
+  storageClassName: local-path
   local:
     path: /mnt/myssd # Der Mount-Punkt der SSD auf deinem Raspberry Pi
   nodeAffinity:
