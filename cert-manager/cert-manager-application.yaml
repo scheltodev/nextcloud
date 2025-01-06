@@ -5,7 +5,7 @@ metadata:
   namespace: argocd
 spec:
   destination:
-    namespace: cert-manager # eigenes NS für cert-manager
+    namespace: nextcloud
     server: https://kubernetes.default.svc
   source:
     repoURL: https://charts.jetstack.io
