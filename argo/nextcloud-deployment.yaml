@@ -7,7 +7,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nextcloud
-  namespace: nextcloud # Namespace hinzugefügt
+  namespace: nextcloud
 spec:
   replicas: 1
   selector:
@@ -25,29 +25,39 @@ spec:
             - containerPort: 80
           env:
             - name: POSTGRES_HOST
-              value: nextcloud-postgresql # Der Name des PostgreSQL-Service
+              value: nextcloud-postgresql
             - name: POSTGRES_DB
-              value: nextcloud # Der Datenbankname
+              value: nextcloud
             - name: POSTGRES_USER
-              value: nextclouduser # Der PostgreSQL-Benutzer
+              value: nextclouduser
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: nextcloud-postgresql-secret
-                  key: password # Holen des Passworts aus dem Secret
+                  key: password
           volumeMounts:
             - name: nextcloud-storage
               mountPath: /var/www/html
+            - name: nextcloud-configmap
+              mountPath: /var/www/html/config/config.php
+              subPath: config.php
+              readOnly: true
       volumes:
         - name: nextcloud-storage
           persistentVolumeClaim:
             claimName: nextcloud-pvc
+        - name: nextcloud-configmap
+          configMap:
+            name: nextcloud-config
+            items:
+              - key: config.php
+                path: config.php
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: nextcloud-service
-  namespace: nextcloud # Namespace hinzugefügt
+  namespace: nextcloud
 spec:
   selector:
     app: nextcloud
@@ -55,4 +65,23 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
-  type: NodePort # Falls du externen Zugriff möchtest, ansonsten kannst du NodePort oder ClusterIP verwenden
+  type: NodePort
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nextcloud-config
+  namespace: nextcloud
+data:
+  config.php: |
+    <?php
+    $CONFIG = array (
+      'trusted_domains' =>
+      array (
+        0 => 'localhost',
+        1 => 'team-s.duckdns.org',
+      ),
+      'overwritehost' => 'team-s.duckdns.org',
+      'overwriteprotocol' => 'https',
+      'overwrite.cli.url' => 'https://team-s.duckdns.org',
+    );
