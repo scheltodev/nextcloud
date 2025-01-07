@@ -41,7 +41,7 @@ spec:
       volumes:
         - name: nextcloud-storage
           persistentVolumeClaim:
-            claimName: nextcloud-pvc
+            claimName: nextcloud-pvc-nfs
 ---
 apiVersion: v1
 kind: Service

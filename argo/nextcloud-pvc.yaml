@@ -1,11 +1,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: nextcloud-pvc
+  name: nextcloud-pvc-nfs
+  namespace: nextcloud
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
+  storageClassName: nfs-client
   resources:
     requests:
-      storage: 465Gi # Anpassen an die Größe der SSD
-  storageClassName: local-path
+      storage: 465Gi
