@@ -38,10 +38,15 @@ spec:
           volumeMounts:
             - name: nextcloud-storage
               mountPath: /var/www/html
+            - name: nextcloud-config-volume
+              mountPath: /var/www/html/config
       volumes:
         - name: nextcloud-storage
           persistentVolumeClaim:
             claimName: nextcloud-pvc-nfs
+        - name: nextcloud-config-volume
+          persistentVolumeClaim:
+            claimName: nextcloud-config-pvc
 ---
 apiVersion: v1
 kind: Service
