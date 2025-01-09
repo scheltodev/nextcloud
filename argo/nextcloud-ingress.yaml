@@ -33,6 +33,8 @@ metadata:
   namespace: nextcloud
 spec:
   headers:
+    customResponseHeaders:
+      Strict-Transport-Security: "max-age=15552000; includeSubDomains; preload"
     customRequestHeaders:
       X-Forwarded-Proto: https
     sslRedirect: true
