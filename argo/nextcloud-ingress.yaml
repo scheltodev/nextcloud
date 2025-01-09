@@ -9,6 +9,7 @@ metadata:
     kubernetes.io/ingress.class: "traefik"
     traefik.ingress.kubernetes.io/router.middlewares: nextcloud-secure-headers@kubernetescrd
 spec:
+  ingressClassName: traefik
   tls:
     - hosts:
         - team-s.duckdns.org
