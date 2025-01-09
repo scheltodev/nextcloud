@@ -6,7 +6,7 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-http01
     kubernetes.io/ingress.class: traefik
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
-    traefik.ingress.kubernetes.io/router.middlewares: nextcloud-secure-headers@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: nextcloud-secure-headers@kubernetescrd,nextcloud-well-known@kubernetescrd
     traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
   ingressClassName: traefik
@@ -39,3 +39,14 @@ spec:
     stsIncludeSubdomains: true
     stsPreload: true
     forceSTSHeader: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: nextcloud-well-known
+  namespace: default
+spec:
+  redirectRegex:
+    regex: "^/\\.well-known/(carddav|caldav)"
+    replacement: "/remote.php/dav"
+    permanent: true
