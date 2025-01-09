@@ -3,8 +3,11 @@ kind: Ingress
 metadata:
   name: nextcloud-ingress
   annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
     cert-manager.io/cluster-issuer: "letsencrypt-http01"
     kubernetes.io/ingress.class: "traefik"
+    traefik.ingress.kubernetes.io/router.middlewares: nextcloud-secure-headers@kubernetescrd
 spec:
   tls:
     - hosts:
@@ -21,3 +24,17 @@ spec:
                 name: nextcloud-service
                 port:
                   number: 80
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: secure-headers
+  namespace: nextcloud
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-Proto: https
+    sslRedirect: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    forceSTSHeader: true
