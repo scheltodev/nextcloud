@@ -4,9 +4,8 @@ metadata:
   name: nextcloud-ingress
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-http01
-    kubernetes.io/ingress.class: traefik
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
-    traefik.ingress.kubernetes.io/router.middlewares: nextcloud-secure-headers@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: secure-headers@kubernetescrd
     traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
   ingressClassName: traefik
