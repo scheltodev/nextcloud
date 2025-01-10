@@ -5,7 +5,7 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-http01
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
-    traefik.ingress.kubernetes.io/router.middlewares: secure-headers@kubernetescrd
+    #traefik.ingress.kubernetes.io/router.middlewares: secure-headers@kubernetescrd
     traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
   ingressClassName: traefik
@@ -25,18 +25,18 @@ spec:
                 port:
                   number: 80
 ---
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: secure-headers
-  namespace: nextcloud
-spec:
-  headers:
-    customResponseHeaders:
-      Strict-Transport-Security: "max-age=15552000; includeSubDomains; preload"
-    customRequestHeaders:
-      X-Forwarded-Proto: https
-    sslRedirect: true
-    stsIncludeSubdomains: true
-    stsPreload: true
-    forceSTSHeader: true
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: Middleware
+# metadata:
+#   name: secure-headers
+#   namespace: nextcloud
+# spec:
+#   headers:
+#     customResponseHeaders:
+#       Strict-Transport-Security: "max-age=15552000; includeSubDomains; preload"
+#     customRequestHeaders:
+#       X-Forwarded-Proto: https
+#     sslRedirect: true
+#     stsIncludeSubdomains: true
+#     stsPreload: true
+#     forceSTSHeader: true
